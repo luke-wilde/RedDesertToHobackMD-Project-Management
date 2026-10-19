@@ -1,0 +1,1 @@
+If captured in march, subtract Year - Age - 1, if captured in December only Year - Age for the birth year
