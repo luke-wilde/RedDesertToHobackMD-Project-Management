@@ -3,14 +3,27 @@
 
 #========= LAST UPDATED ==============================#
 #================== 10/16/2026 =======================#
+rm(list=ls())
 
 source("C:/Users/lwilde2/Documents/RDH Database/RedDesertToHobackMuleDeerResearchProject/RCode/other RCode/Misc/DownloadingIridium_FetchFunction.R")
 setwd("C:/Users/lwilde2/Documents/RDH Database/RD2H_GPSCollarData/")
 
+ffr <- read.csv("G:/My Drive/RDH/Field Work/RDH_2026_FawnRecCheck.csv")
+males <- read.csv("G:/My Drive/RDH/Field Work/RDH_2026_BuckCheck.csv")
+
+
+High <- c(610,355,772,812,1054, 715,680, 1003,1063,723,901, 000)
+Med <- c(000)
+Low <- c(812, 975,1054, 725, 000)
+
+males_done <- c(1059, 974, 000)
+
+doneffr <- c(High, Med, males_done)
+
 #=====================================================#
 
 
-rm(list=ls())
+
 
 #load libraries
 
@@ -328,8 +341,10 @@ final.sf <- st_as_sf(final.gps,
 
 
 #keep only those for Fawn recruitment
-final.sf <- final.sf %>% filter(AID %in% DeerID.Data.active$AID) %>% group_by(AID) %>% slice_tail(n=days)
+final.sf <- final.sf %>% filter(AID %in% DeerID.Data.active$AID & AID %in% c(ffr$AID, males$AID)) %>% group_by(AID) %>% slice_tail(n=days)
 
+#remove those already completed
+final.sf <-final.sf |> filter(!AID %in% doneffr)
 
 #----------------------------------------------------------------#
 #### Draw Lines and Keep point for only Last Day ####
@@ -413,9 +428,46 @@ final.lines.ll <- final.lines.ll[which(npts(final.lines.ll, by_feature = T) >= 2
 # st_write(final.point, "C:/Users/lwilde2/Desktop/RDH Database/RedDesertToHobackMuleDeerResearchProject/FieldSeasonPrep/FieldSeason2023/Fall/Points/RDH_new_LatestPoint.kml")
 
 #kmlPoints(obj=final.point.sp["AID"], kmlfile="G:/My Drive/RDH/Field Work/RDH_new_LatestPoint.kml", kmlname="daily points", name = final.point.sp$FFRid)
-final.point.ll$FFRid <- paste(ifelse(final.point.ll$daysOld > 2, "*old* ",""), final.point.ll$Frequency ,"_", final.point.ll$AID,"_", final.point.ll$TagColor, final.point.ll$TagNum, sep = "")
+final.point.ll$FFRid <- paste(ifelse(final.point.ll$daysOld > 30, "*old* ",""), final.point.ll$Frequency ,"_", final.point.ll$AID,"_", final.point.ll$TagColor, final.point.ll$TagNum, sep = "")
 
 final.point.ll <- final.point.ll %>% rename(Name = FFRid)
+
+
+# Replace Old points and delete their lines ------- 
+
+#broken.NoAssetlinkIssue <- c(446, 626, 682, 701, 707, 713, 744, 970, 973) #10/22/2026
+
+old.pt <- final.point.ll |> filter(daysOld >30)
+
+last.closest <- final.gps |>
+  filter(AID %in% old.pt$AID) |>
+  mutate(
+    yday_diff = abs(yday(POSIXct) - yday(Sys.Date())),
+    # Wrap around the year boundary (e.g., Dec 30 is close to Jan 2)
+    yday_diff = pmin(yday_diff, 365 - yday_diff)
+  ) |>
+  group_by(AID) |>
+  filter(yday_diff == min(yday_diff)) |>
+  ungroup()
+
+last.closest <- last.closest |>
+  group_by(AID) |>
+  slice_max(POSIXct, n = 1, with_ties = FALSE) |>
+  ungroup() |> st_as_sf(
+                     coords = c("Long", "Lat"), # note x goes first
+                     crs = "+proj=utm +zone=12 +ellps=WGS84 +datum=WGS84 +no_defs", # projection, this is NAD83
+                     remove = FALSE) # don't remove lat/lon cols from dataframe
+
+good.witch <- final.point.ll |> filter(daysOld <=30)
+bad.witch <- final.point.ll |> filter(daysOld >30)
+
+last.closest$Name <-  paste("*old* ", last.closest$AID, "_", last.closest$Frequency ,"_", last.closest$TagColor, last.closest$TagNum, sep = "")
+last.closest <- last.closest |> mutate(daysOld = 999) |> select(names(bad.witch)) |> st_transform("+proj=latlon +zone=12 +ellps=WGS84 +datum=WGS84 +no_defs")
+
+final.point.ll <- good.witch #bind_rows(good.witch, last.closest)
+
+final.lines.ll <- final.lines.ll |> filter(!AID %in% last.closest$AID)
+
 
 #sf version
 st_write(final.point.ll, "G:/My Drive/RDH/Field Work/RDH_points.kml", driver = "KML", delete_dsn = TRUE, name = final.point.ll$Name)
