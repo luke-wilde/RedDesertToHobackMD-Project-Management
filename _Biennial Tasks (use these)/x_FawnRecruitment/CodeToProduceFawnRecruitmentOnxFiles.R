@@ -12,8 +12,8 @@ ffr <- read.csv("G:/My Drive/RDH/Field Work/RDH_2026_FawnRecCheck.csv")
 males <- read.csv("G:/My Drive/RDH/Field Work/RDH_2026_BuckCheck.csv")
 
 
-High <- c(610,355,772,812,1054, 715,680, 1003,1063,723,901, 000)
-Med <- c(000)
+High <- c(742, 610,355,772,812,1054, 715,680, 1003,1063,723,901, 721, 752, 725, 000)
+Med <- c(958, 360, 000)
 Low <- c(812, 975,1054, 725, 000)
 
 males_done <- c(1059, 974, 000)

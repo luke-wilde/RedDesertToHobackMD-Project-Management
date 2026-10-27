@@ -1,0 +1,7 @@
+
+d665 <- final.t |> filter(CllrSrN == "751713A") |> filter(year(Date) == 2026 , month(Date) >= 8)
+
+d665 |> filter(year(Date) == 2026 , month(Date) >= 8) %>% as(., "Spatial") |> st_as_sf() |> mapview() # %>% Points2Lines(data = ., date_name = "Date", id_name = "CllrSrN", byid=T) |> mapview()
+2
+
+st_write(d665, "C:/Users/lwilde2/Downloads/d665_2026.shp")

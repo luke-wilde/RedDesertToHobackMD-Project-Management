@@ -25,12 +25,12 @@ library(lubridate)
 library(stringr)
 library(sp)
 library(sf)
-library(beepr)
+#library(beepr)
 
 
 target.tz <- Sys.timezone()
 
-if(target.tz == "MST"){ message("correct TZ implimented")} else { target.tz = "MST"; message("TZ changed")}
+if(target.tz == "America/Denver"){ message("correct TZ implimented")} else { target.tz = "America/Denver"; message("TZ changed")}
 
 select <- dplyr::select
 filter <- dplyr::filter
@@ -40,7 +40,7 @@ setwd("C:/Users/lwilde2/Documents/")
 #-------------------------------#
 #-------------------------------#
 # UPDATE THESE ####
-Telonics_new <- "/RDH Database/RedDesertToHobackMuleDeerResearchProject/GPS_Collar_Data/Telonics_AllGPSData_FromCollars/AllTelonicsRawDataFromCollars_15APRIL2026.csv"
+Telonics_new <- "/RDH Database/RedDesertToHobackMuleDeerResearchProject/GPS_Collar_Data/Telonics_AllGPSData_FromCollars/AllTelonicsRawDataFromCollars_27OCTOBER2026.csv"
 # VEC_new <- "C:/Users/lwilde2/Desktop/RDH Database/RD2H_GPSCollarData/RD2H_ATS_Data/ATSIridiumAllDown_FinalGPSData_11DECEMBER2022.csv"
 DEERID_new <- "/RDH Database/RD2H_GPSCollarData/RD2H_AllDeerIDs_15MARCH2026.csv"
 #-------------------------------#
@@ -271,7 +271,7 @@ rm(e)
 #Set working directory
 dir.tdc <- paste0(getwd(),"/RDH Database/RD2H_GPSCollarData/RD2H_Telonics_Data/IndividualRawGlobalstarDataFromTDC/")
 
-rm(t)
+#rm(t)
 
 #Loop through every CSV file, remove unncessary rows, create CllrSrN and ESN column
 read.csv.fx <- function(x){
@@ -286,7 +286,7 @@ read.csv.fx <- function(x){
     )
 }
 
-head(t)
+#head(t)
 
 #Bind all csv files together and convert into a single dataframe
 files <- list.files(dir.tdc,full.names = TRUE)
@@ -845,6 +845,7 @@ clean.Data2 <- clean.Data2 %>% mutate(POSIXct = ymd_hms(POSIXct, tz = target.tz)
 
 #check tz of POSIXct
 tz(clean.Data2$POSIXct)
+table(is.na(clean.Data2$POSIXct))
 
 #make spatial
 clean.Data2 <- clean.Data2 %>% st_as_sf(., coords = c("Long","Lat"), crs = CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs")) %>% mutate(Lat = st_coordinates(.)[,2], Long = st_coordinates(.)[,1]) %>% st_transform(., CRS("EPSG:32612")) %>% mutate(UTM_N = st_coordinates(.)[,2], UTM_E = st_coordinates(.)[,1])

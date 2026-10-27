@@ -1,5 +1,8 @@
-Sys.setenv(TZ="MST")
-Sys.timezone()
+Sys.setenv(TZ="America/Denver")
+
+target.tz <- Sys.timezone()
+
+if(target.tz == "America/Denver"){ message("correct TZ implimented")} else { target.tz = "America/Denver"; message("TZ changed")}
 
 #Downloading and organizing all Telonics data that has been downloaded directly from the collars
 #Code written by Anna Ortega, Wyoming Cooperative Fish and Wildlife Research Unit
@@ -10,7 +13,7 @@ Sys.timezone()
 ## ATTN:: !! Pay close attention to the format of the TDC downloads, the columns are sometimes not where they should be -- consider changing over to tidyverse and calling by name instead !! ##
 
 # ENTER THE NEW NAME, BASED ON THE UPDATE TIME
-UpdateName <- "15APRIL2026"
+UpdateName <- "27OCTOBER2026"
 
 #Load required libraries
 library(lubridate)
@@ -39,6 +42,9 @@ head(gps); tail(gps)
 
 str(gps)
 unique(gps$CllrSrN)
+
+table(is.na(gps$CllrSrN))
+
 
 #Remove GPS fixes that have failed or have zero data
 gps<-gps[gps$GPS.Fix.Attempt!="Failed", ]
@@ -79,7 +85,7 @@ t$dt <- paste(as.character(t$Date), t$Time, sep=" ")
 t$POSIXct <- as.POSIXct(strptime(t$dt, format="%Y-%m-%d %H:%M:%S"), tz="UTC")
 head(t)
 attr(t$POSIXct, "tzone") <- "GMT"
-attr(t$POSIXct, "tzone") <- "MST"
+attr(t$POSIXct, "tzone") <- target.tz
 
 #Reconvert date and time data to match MST time zone
 t$Month <- month(t$POSIXct)
@@ -92,7 +98,7 @@ t$Sec <- sprintf(paste("%02d"), 00)
 t$Time <- paste(t$Hour, t$Minute, t$Sec, sep=":")
 t$Date <- paste(t$Year, t$Month, t$Day, sep="-")
 t$dt <- paste(as.character(t$Date), t$Time, sep=" ")
-t$POSIXct <- as.POSIXct(strptime(t$dt, format="%Y-%m-%d %H:%M:%S"), tz="MST")
+t$POSIXct <- as.POSIXct(strptime(t$dt, format="%Y-%m-%d %H:%M:%S"), tz=target.tz)
 t$DayOfYear <- yday(t$POSIXct)
 t$Date <- lubridate::date(t$POSIXct)
 t$Minute <- lubridate::minute(t$POSIXct)
@@ -125,13 +131,14 @@ sapply(names(t), function(col_name) {
 
 
 #Remove unneccessary columns, rename column headers, organize columns
-head(t[c(5:6,10,14,16,21,29:31,36:37,39:40)])
-t <- t[c(5:6,10,14,16,21,29:31,36:37,39:40)]
+head(t[c(5:6,10,14,16,21,26:28,33:34,36:37)])
+t <- t[c(5:6,10,14,16,21,26:28,33:34,36:37)]
 colnames(t)<-c("Lat","Long","Altitude","HDOP","NumSats","CllrSrN","Year","Month","Day","Time","Date","POSIXct","DayOfYear")
 t<-t[order(t$CllrSrN,t$POSIXct),]
 final.t <- t[c("CllrSrN","POSIXct","Month","Day", "Year", "DayOfYear","Date","Time","Lat","Long","Altitude","HDOP","NumSats")]
 head(final.t)
 str(final.t)
+
 #Omit POSIXct values with null values
 final.t<-final.t[!is.na(final.t[,2]),] 
 
@@ -271,7 +278,7 @@ t$dt <- paste(as.character(t$Date), t$Time, sep=" ")
 t$POSIXct <- as.POSIXct(strptime(t$dt, format="%Y-%m-%d %H:%M:%S"), tz="UTC")
 head(t)
 attr(t$POSIXct, "tzone") <- "GMT"
-attr(t$POSIXct, "tzone") <- "MST"
+attr(t$POSIXct, "tzone") <- target.tz
 
 #Reconvert date and time data to match MST time zone
 t$Month <- month(t$POSIXct)
@@ -284,7 +291,7 @@ t$Sec <- sprintf(paste("%02d"), 00)
 t$Time <- paste(t$Hour, t$Minute, t$Sec, sep=":")
 t$Date <- paste(t$Year, t$Month, t$Day, sep="-")
 t$dt <- paste(as.character(t$Date), t$Time, sep=" ")
-t$POSIXct <- as.POSIXct(strptime(t$dt, format="%Y-%m-%d %H:%M:%S"), tz="MST")
+t$POSIXct <- as.POSIXct(strptime(t$dt, format="%Y-%m-%d %H:%M:%S"), tz=target.tz)
 t$DayOfYear <- yday(t$POSIXct)
 head(t); tail(t); unique(t$CllrSrN)
 names(t)

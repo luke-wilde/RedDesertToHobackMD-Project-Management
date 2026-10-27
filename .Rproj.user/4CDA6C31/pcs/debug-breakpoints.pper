@@ -1,0 +1,21 @@
+{
+    "debugBreakpointsState": {
+        "breakpoints": [
+            {
+                "id": 3,
+                "path": "~/GitHub/RedDesertToHobackMD-Project-Management/_Biennial Tasks (use these)/A_UpdatingCollarGPSDatabase/Step2_DownloadingRD2HAllDataIntoOneDatabase.R",
+                "line_number": 851,
+                "function_steps": "",
+                "function_name": "toplevel",
+                "state": 1,
+                "editor_state": 1,
+                "editor_line_number": 851,
+                "is_pending_debug_completion": false,
+                "needs_updated_steps": false,
+                "type": 1,
+                "is_package_breakpoint": false,
+                "package_name": ""
+            }
+        ]
+    }
+}
