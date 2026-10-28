@@ -19,7 +19,7 @@ library(slider) #install.packages("slider")
 
 target.tz <- Sys.timezone()
 
-if(target.tz == "MST"){ message("correct TZ implimented")} else { target.tz = "MST"; message("TZ changed")}
+if(target.tz == "America/Denver"){ message("correct TZ implimented")} else { target.tz = "America/Denver"; message("TZ changed")}
 
 select <- dplyr::select
 filter <- dplyr::filter
@@ -112,9 +112,9 @@ quantile(tmp$speed, probs = c(0,0.025,0.975,0.9995,1), na.rm =T)
 
 # data.sf <- bind_rows(tmp %>% filter(diff < 3600*2.2) %>% filter(as.numeric(speed) < 3), tmp %>% filter(diff >= 3600*2.2))
 
-data.sf <- tmp %>% filter(as.numeric(speed) <= quantile(tmp$speed, probs = c(0.9995), na.rm =T))
+data.sf <- tmp %>% filter(as.numeric(speed) <= pmax(3, quantile(tmp$speed, probs = c(0.9995), na.rm =T)))
 
-message(paste("This code removed", nrow(data) - nrow(data.sf), "locations which exceeded the speed barrier of ",quantile(tmp$speed, probs = c(0.9995), na.rm =T) ," m/s."))
+message(paste("This code removed", nrow(data) - nrow(data.sf), "locations which exceeded the speed barrier of ",pmax(3, quantile(tmp$speed, probs = c(0.9995), na.rm =T)) ," m/s."))
 
 # find outliers that lie beyond the 99% boundary ####
 #----------------------------------------------#
