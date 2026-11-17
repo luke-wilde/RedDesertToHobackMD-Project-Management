@@ -1,7 +1,7 @@
 # Code to export graph of Dec 1 to Current Day Winter Mortality
 # Author: Luke Wilde
 # Created: 3/15/2023
-# last edit: 4/13/2023
+# last edit: 11/11/2026
 
 
 #-------------------------------#
@@ -21,24 +21,24 @@ library(dplyr)
 
 #--------------------------------------#
 # Survival metadata ####
-meta <- "C:/Users/lwilde2/Desktop/RDH Database/RD2H_GPSCollarData/RD2H_AllDeerIDs_21SEPTEMBER2024.csv" # this is where your Ortega style metadata file is, make sure its the most current
+meta <- "C:/Users/lwilde2/Documents/RDH Database/RD2H_GPSCollarData/RD2H_AllDeerIDs_15MARCH2026.csv" # this is where your Ortega style metadata file is, make sure its the most current
 
 
 #--------------------------------------#
 # Additional information ####
 
 #exclude Vehicle and Capture related mortalities as these are not natural mortalities
-Wint <- c("14-15","15-16","16-17","17-18","18-19","19-20","20-21","21-22","22-23","23-24")
-CapM <- c(0,3,4,2,0,5,1,3,4,2)
+Wint <- c("14-15","15-16","16-17","17-18","18-19","19-20","20-21","21-22","22-23","23-24","24-25","25-26")
+CapM <- c(0,3,4,2,0,5,1,3,4,2,3,2)
 #c(0,3,4,2,0,5,1,3,4) #without fawns
 #c(0,3,4,2,0,5,2,4,5) #with fawns
 
-VehM <- c(0,0,0,0,0,2,1,1,0,0)
+VehM <- c(0,0,0,0,0,2,1,1,0,0,0,4)
 
 RDHexclude <- data.frame(Wint = Wint, CapM = CapM, VehM = VehM)
 RDHexclude
 
-fawns <- c(seq(850,899,1))
+fawns <- c(seq(1050,1099,1))
 
 #-----------------------------------#
 # Load and prep metadata ####
@@ -54,8 +54,9 @@ x <- DeerID %>% filter(Fawn.Sex != "M") %>% filter(is.na(StopDate) | StopDate - 
 x
 
 #remove fawns
-DeerID <- DeerID %>% filter(!AID %in% fawns)
+DeerID <- DeerID %>% filter(!AID %in% fawns, Fawn.Sex != "M")
 length(unique(DeerID$AID))
+
 #------------------------------#
 # Extract relevant info ####
 
@@ -113,7 +114,7 @@ sum %>% print(n = nrow(.))
 # AIDs in this FY for USGS report ####
 #-------------------------------------#
 
-AID_Y <- sum %>% filter(minY <= 2023) %>% filter(maxY == 2024) %>% select(AID)
+AID_Y <- sum %>% filter(minY <= 2025) %>% filter(maxY == 2026) %>% select(AID)
 
 DeerID %>% filter(AID %in% AID_Y$AID) %>% group_by(Fawn.Sex) %>% summarise(n = n())
 
@@ -122,7 +123,7 @@ DeerID %>% filter(Fawn.Sex %in% c("", "F")) %>% distinct(AID, Mgtry)  %>% group_
 
 
 #add
-year <- c(2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024)
+year <- c(2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025,2026)
 
 collarsYearly <- data.frame()
 for(i in year){
@@ -154,7 +155,7 @@ data
 
 #prepare labels
 #morts in the winter
-txt <- paste("2024 data current as of:")
+txt <- paste("2026 data current as of:")
 x_lab <- paste("Winter (Dec 1 - Apr 24)",sep="")
 
 
@@ -168,9 +169,9 @@ perc.surv <- ggplot(data)  + geom_bar(aes(x = as.character(wint), y = wintsurv *
 
 #------------------------------#
 # Export plots ####
-ggsave(morts, file = "C:/Users/lwilde2/Downloads/RedDesert_WinterMorts_04242023_new.png", width = 6, height = 4)
-ggsave(perc.morts, file = "C:/Users/lwilde2/Downloads/RedDesert_WinterMortsPercentOfSample_04242023_new.png", width = 6, height = 4)
-ggsave(perc.surv, file = "C:/Users/lwilde2/Downloads/RedDesert_AdultWinterSurvival_05232023_new.png", width = 6, height = 4)
+ggsave(morts, file = "C:/Users/lwilde2/Downloads/RedDesert_WinterMorts_11112026_new.png", width = 6, height = 4)
+ggsave(perc.morts, file = "C:/Users/lwilde2/Downloads/RedDesert_WinterMortsPercentOfSample_11112026_new.png", width = 6, height = 4)
+ggsave(perc.surv, file = "C:/Users/lwilde2/Downloads/RedDesert_AdultWinterSurvival_11112026_new.png", width = 6, height = 4)
 
 
 
