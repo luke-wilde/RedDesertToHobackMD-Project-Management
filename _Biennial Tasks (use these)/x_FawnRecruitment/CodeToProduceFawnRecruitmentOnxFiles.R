@@ -12,8 +12,8 @@ ffr <- read.csv("G:/My Drive/RDH/Field Work/RDH_2026_FawnRecCheck.csv")
 males <- read.csv("G:/My Drive/RDH/Field Work/RDH_2026_BuckCheck.csv")
 
 
-High <- c(742, 610,355,772, 715,680, 1003,1063,723,901, 721, 752, 725, 710,801,703,735,801, 813, 711,710 ,810, 1065,626, 955,865, 807, 628, 806,732, 761,743,958,708,000)
-Med <- c(958, 360, 975,708, 000)
+High <- c(742, 610,355,772, 715,680, 1003,1063,723,901, 721, 752, 725, 710,801,703,735,801, 813, 711,710 ,810, 1065,626, 955,865, 807, 628, 806,732, 761,743,958,708,858,681,701,713, 903,744,1067,000)
+Med <- c(958, 360, 975,708,625,973, 665, 000)
 Low <- c(812, 975,1054, 725, 1054, 812, 626, 955, 529, 743, 000)
 
 males_done <- c(1059, 974, 859, 1057, 000)
@@ -418,7 +418,7 @@ final.point.sp$FFRid <- paste(final.point.sp$Frequency ,"_", final.point.sp$TagC
 
 final.lines.ll <- final.lines.ll[which(npts(final.lines.ll, by_feature = T) >= 2),] # make sure to only add lines for deer with >1 point or will throw errors
 
-#mapview(final.point.ll, layer.name = "Loc", zcol = "Mgtry", map.types = c("OpenStreetMap","OpenTopoMap")) + mapview(final.lines.ll[,-1], layer.name = "Recent Movement", color = "grey") #+ mapview(stag, layer.name = "Staging Areas", col.regions = "red", col = "yellow")
+#mapview(final.point.ll, layer.name = "Loc", zcol = "Mgtry", map.types = c("Esri.WorldTopoMap","OpenTopoMap")) + mapview(final.lines.ll[,-1], layer.name = "Recent Movement", color = "grey") #+ mapview(stag, layer.name = "Staging Areas", col.regions = "red", col = "yellow")
 
 #final.point.ll$newID
 

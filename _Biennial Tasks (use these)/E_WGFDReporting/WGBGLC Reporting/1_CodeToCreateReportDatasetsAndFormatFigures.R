@@ -16,13 +16,13 @@ library(readxl)
 # Call data ####
 #-----------------------------------#
 
-#mig timing table
-MigrationTimes <- read.csv("C:/Users/lwilde2/Desktop/RDH Database/RedDesertToHobackMuleDeerResearchProject/Migrations/RDH_AllSpringFallMigrationTiming_2014_thru_2022.csv")
+# #mig timing table
+# MigrationTimes <- read.csv("C:/Users/lwilde2/Documents/RDH Database/RedDesertToHobackMuleDeerResearchProject/Migrations/RDH_AllSpringFallMigrationTiming_2014_thru_2022.csv")
 
 #load IDs
-meta <- read.csv("C:/Users/lwilde2/Desktop/RDH Database/RD2H_GPSCollarData/RD2H_AllDeerIDs_11DECEMBER2025.csv")
+meta <- read.csv("C:/Users/lwilde2/Documents/RDH Database/RD2H_GPSCollarData/RD2H_AllDeerIDs_15MARCH2026.csv")
 
-setwd("C:/Users/lwilde2/Desktop/RDH Database/RedDesertToHobackMuleDeerResearchProject/Data/Archived_RD2HData/AllCaptures/")
+setwd("C:/Users/lwilde2/Documents/RDH Database/RedDesertToHobackMuleDeerResearchProject/Data/Archived_RD2HData/AllCaptures/")
 FRS15 <- read_excel("Fawn Recruitment/RD2H_MD_Fall2015_FawnRecruitment.xlsx")
 FRS17 <- read_excel("Fawn Recruitment/RD2H_MD_Fall2017_FawnRecruitment.xlsx")
 FRS18 <- read_excel("Fawn Recruitment/RD2H_MD_Fall2018_FawnRecruitment.xlsx")
@@ -33,6 +33,7 @@ FRS22 <- read_excel("Fawn Recruitment/RD2H_MD_Fall2022_FawnRecruitment.xlsx")
 FRS23 <- read_excel("Fawn Recruitment/RD2H_MD_Fall2023_FawnRecruitment.xlsx")
 FRS24 <- read_excel("Fawn Recruitment/RD2H_MD_Fall2024_FawnRecruitment.xlsx")
 FRS25 <- read_excel("Fawn Recruitment/RD2H_MD_Fall2025_FawnRecruitment.xlsx")
+FRS26 <- read_excel("Fawn Recruitment/RD2H_MD_Fall2026_FawnRecruitment.xlsx")
 
 D14 <- read_excel("Annual Capture Data/RD2H_MD_Dec2014_CaptureData.xlsx")
 D15 <- read_excel("Annual Capture Data/RD2H_MD_Dec2015_CaptureData.xlsx")
@@ -59,6 +60,7 @@ M22 <- read_excel("Annual Capture Data/RD2H_MD_March2022_CaptureData.xlsx")
 M23 <- read_excel("Annual Capture Data/RD2H_MD_March2023_CaptureData.xlsx")
 M24 <- read_excel("Annual Capture Data/RD2H_MD_March2024_CaptureData.xlsx")
 M25 <- read_excel("Annual Capture Data/RD2H_MD_March2025_CaptureData.xlsx")
+M26 <- read_excel("Annual Capture Data/RD2H_MD_March2026_CaptureData.xlsx")
 
 # Format datasets ####
 #-----------------------------------#
@@ -74,12 +76,15 @@ FRS22 <- FRS22 %>% select(Date, MigrationStrategy, DeerID, YoungAtHeel,NumYoung,
 FRS23 <- FRS23 %>% mutate(MigrationStrategy = NA) %>%  rename(YoungAtHeel = 'YoungAtHeel (1=Yes, 0=No)', NumYoung = 'NumOfOffspring (with Collar)')
 FRS24 <- FRS24 %>% mutate(MigrationStrategy = NA) %>%  rename(YoungAtHeel = 'YoungAtHeel (1=Yes, 0=No)', NumYoung = 'NumOfOffspring (with Collar)')
 FRS25 <- FRS25 %>% mutate(MigrationStrategy = NA) %>%  rename(YoungAtHeel = 'YoungAtHeel (1=Yes, 0=No)', NumYoung = 'NumOfOffspring (with Collar)')
+FRS26 <- FRS26 %>% mutate(MigrationStrategy = NA) %>%  rename(YoungAtHeel = 'YoungAtHeel (1=Yes, 0=No)', NumYoung = 'NumOfOffspring (with Collar)')
 
 FRS23 <- FRS23 %>% mutate(AID = DeerID) %>% select(-MigrationStrategy) %>% left_join(meta %>% mutate(MigrationStrategy = Mgtry) %>% select(AID, MigrationStrategy), by = "AID", relationship = "many-to-many") %>% select(Date, MigrationStrategy, DeerID, YoungAtHeel,NumYoung, NumDoes, NumFawns, RecruitmentConfidence) %>% arrange(Date)
 
 FRS24 <- FRS24 %>% mutate(AID = DeerID) %>% select(-MigrationStrategy) %>% left_join(meta %>% mutate(MigrationStrategy = Mgtry) %>% select(AID, MigrationStrategy), by = "AID", relationship = "many-to-many") %>% select(Date, MigrationStrategy, DeerID, YoungAtHeel,NumYoung, NumDoes, NumFawns, RecruitmentConfidence) %>% arrange(Date)
 
 FRS25 <- FRS25 %>% mutate(AID = DeerID) %>% select(-MigrationStrategy) %>% left_join(meta %>% mutate(MigrationStrategy = Mgtry) %>% select(AID, MigrationStrategy), by = "AID", relationship = "many-to-many") %>% select(Date, MigrationStrategy, DeerID, YoungAtHeel,NumYoung, NumDoes, NumFawns, RecruitmentConfidence) %>% arrange(Date)
+
+FRS26 <- FRS26 %>% mutate(AID = DeerID) %>% select(-MigrationStrategy) %>% left_join(meta %>% mutate(MigrationStrategy = Mgtry) %>% select(AID, MigrationStrategy), by = "AID", relationship = "many-to-many") %>% select(Date, MigrationStrategy, DeerID, YoungAtHeel,NumYoung, NumDoes, NumFawns, RecruitmentConfidence) %>% arrange(Date)
 
 FRS15 <- FRS15[!duplicated(FRS15[, c("DeerID")], fromLast=T),]
 FRS17 <- FRS17[!duplicated(FRS17[, c("DeerID")], fromLast=T),]
@@ -91,8 +96,9 @@ FRS22 <- FRS22[!duplicated(FRS22[, c("DeerID")], fromLast=T),]
 FRS23 <- FRS23[!duplicated(FRS23[, c("DeerID")], fromLast=T),]
 FRS24 <- FRS24[!duplicated(FRS24[, c("DeerID")], fromLast=T),]
 FRS25 <- FRS25[!duplicated(FRS25[, c("DeerID")], fromLast=T),]
+FRS26 <- FRS26[!duplicated(FRS26[, c("DeerID")], fromLast=T),]
 
-FRSall <- rbind(FRS17, FRS18, FRS19, FRS20, FRS21, FRS22, FRS23,FRS24,FRS25) %>% mutate(Year = as.character(year(Date))) # 2015 has too few records of Medium or Short to keep
+FRSall <- rbind(FRS17, FRS18, FRS19, FRS20, FRS21, FRS22, FRS23,FRS24,FRS25,FRS26) %>% mutate(Year = as.character(year(Date))) # 2015 has too few records of Medium or Short to keep
 
 FRSall$MigrationStrategy <- ifelse(FRSall$MigrationStrategy == "Resident", "Short", FRSall$MigrationStrategy)
 
@@ -120,6 +126,7 @@ M22 <- M22  %>% select(CapDate, MetatarsusLength_cm,BodyLength_cm, BodyGirth_cm,
 M23 <- M23  %>% select(CapDate, MetatarsusLength_cm,BodyLength_cm, BodyGirth_cm, NetWeight_lbs, MigrationBehavior, DeerID, scaledIFBFat, Age,Sex)
 M24 <- M24  %>% select(CapDate, MetatarsusLength_cm,BodyLength_cm, BodyGirth_cm, NetWeight_lbs, MigrationBehavior, DeerID, scaledIFBFat, Age,Sex)
 M25 <- M25  %>% select(CapDate, MetatarsusLength_cm,BodyLength_cm, BodyGirth_cm, NetWeight_lbs, MigrationBehavior, DeerID, scaledIFBFat, Age,Sex)
+M26 <- M26  %>% select(CapDate, MetatarsusLength_cm,BodyLength_cm, BodyGirth_cm, NetWeight_lbs, MigrationBehavior, DeerID, scaledIFBFat, Age,Sex) |> mutate(scaledIFBFat = as.numeric(scaledIFBFat)) 
 
 # x <- data.frame("DeerID" = as.character(c(601, 603, 605,606,607,608,609,610,611,612,613,614,615,616,617,618, 619,620,621,622,623,624,625,626,627,628,629,630,631)), "MigrationStrategy2" = c("Long","Long", "Short","Medium","Medium","Medium","N/A","Short","Long","N/A","N/A","N/A","N/A","Short","Long","N/A","Medium","Long","Medium", "Medium","Long", "Long", "Long","Medium", "Long","Medium","Medium","Long","Long")
 # )
@@ -131,7 +138,7 @@ M22 <- M22 %>% select(-MigrationBehavior) %>% left_join(meta %>% mutate(Migratio
 M23 <- M23 %>% select(-MigrationBehavior) %>% left_join(meta %>% mutate(MigrationBehavior = Mgtry, DeerID = as.character(AID)) %>% select(DeerID, MigrationBehavior), by = "DeerID")
 
 
-MARall <- rbind(M14, M15, M16, M17, M18, M19, M20, M21, M22, M23, M24,M25) %>% mutate(Year = year(CapDate)) 
+MARall <- rbind(M14, M15, M16, M17, M18, M19, M20, M21, M22, M23, M24,M25,M26) %>% mutate(Year = year(CapDate)) 
 MARall$CapEvent <- paste0("Mar", " ", MARall$Year, sep = "")
 
 ## !!! ATTN: include , FetusNum, EyeDiam1_mm and then output this
@@ -209,15 +216,15 @@ stat <- FRSall %>% filter(RecruitmentConfidence %in% c("HIGH","High")) %>% as_ti
 
 ggplot(stat) + geom_bar(aes(x = Year, y = FawnsPer100Does, fill = MigrationStrategy), stat = "identity", width=.5, position = "dodge") + scale_fill_manual(values = c("mediumorchid4","darkorange","darkgreen")) + theme_classic() + labs(y = "Number of Fawns per 100 Does", x = "Year", fill = "Migration Strategy") + lims(y = c(0,120)) + theme(legend.position = "bottom") + geom_hline(aes(yintercept = 100), linetype = "dashed") + scale_y_continuous(limits = c(0,120), breaks = seq(0,130,15)) + theme(axis.text.x = element_text(size = 18), axis.text.y = element_text(size = 12), axis.title.y = element_text(size = 16), axis.title.x = element_blank(), legend.text = element_text(size = 18), legend.title = element_text(size = 18))
 
-ggsave("C:/Users/lwilde2/Desktop/RDH Database/RedDesertToHobackMuleDeerResearchProject/GrantApplications/WGBGLC_Grant/AnnualReports/2025/FRS_Figure_EOY.png", width = 12, height = 8)
+ggsave("C:/Users/lwilde2/Documents/RDH Database/RedDesertToHobackMuleDeerResearchProject/GrantReports/WGBGLC/AnnualReports/2026/FRS_Figure_EOY.png", width = 12, height = 8)
 
 # IFBF Dynamics ####
 #-----------------------------------#
-CAPall <- CAPall %>% filter(Sex == "Female")
+CAPall <- CAPall %>% filter(Sex == "Female") |> mutate(scaledIFBFat = as.numeric(scaledIFBFat))
 
-stat2 <- na.omit(CAPall %>% select(!Age)) %>% group_by(MigrationBehavior, CapEvent) %>% summarise(Mean = mean(scaledIFBFat), SE = sd(scaledIFBFat)/sqrt(n())) %>% filter(MigrationBehavior != "N/A") %>% ungroup() #na.omit(CAPall)
+stat2 <- na.omit(CAPall %>% select(!Age)) %>% group_by(MigrationBehavior, CapEvent) %>% summarise(Mean = mean(scaledIFBFat, na.rm = T), SE = sd(scaledIFBFat)/sqrt(n())) %>% filter(MigrationBehavior != "N/A") %>% ungroup() #na.omit(CAPall)
 
-stat2$CapEvent <- factor(stat2$CapEvent, levels = c("Mar 2014", "Dec 2014", "Mar 2015", "Dec 2015", "Mar 2016", "Dec 2016", "Mar 2017", "Dec 2017", "Mar 2018", "Dec 2018", "Mar 2019", "Dec 2019", "Mar 2020", "Dec 2020", "Mar 2021", "Dec 2021" , "Mar 2022", "Dec 2022", "Mar 2023", "Dec 2023", "Mar 2024", "Dec 2024", "Mar 2025", "Dec 2025"))
+stat2$CapEvent <- factor(stat2$CapEvent, levels = c("Mar 2014", "Dec 2014", "Mar 2015", "Dec 2015", "Mar 2016", "Dec 2016", "Mar 2017", "Dec 2017", "Mar 2018", "Dec 2018", "Mar 2019", "Dec 2019", "Mar 2020", "Dec 2020", "Mar 2021", "Dec 2021" , "Mar 2022", "Dec 2022", "Mar 2023", "Dec 2023", "Mar 2024", "Dec 2024", "Mar 2025", "Dec 2025","Mar 2026"))
 
 
 
@@ -226,9 +233,9 @@ CAPall$MigrationBehavior <- ifelse(CAPall$MigrationBehavior == "Odd", "TBD", DEC
 stat3 <- na.omit(DECall %>% select(!Age)) %>% group_by(MigrationBehavior) %>% summarise(Mean = mean(scaledIFBFat)) %>% filter(!MigrationBehavior %in% c(NA,"TBD","N/A","Medium/Disperser")) %>% ungroup()
 
 
-ggplot(stat2 %>% filter(!MigrationBehavior %in% c("TBD","Odd","Medium/Disperser")) %>% mutate(MigrationBehavior = ifelse(MigrationBehavior == "Resident", "Short", MigrationBehavior))) + geom_pointrange(aes(x = CapEvent, y = Mean, ymin = Mean - SE, ymax = Mean + SE, group = MigrationBehavior, colour = MigrationBehavior), position = position_dodge2(width = .175)) + geom_line(aes(x = CapEvent, y = Mean, group = MigrationBehavior, colour = MigrationBehavior), position = position_dodge2(width = .175)) + scale_colour_manual(values = c("mediumorchid4","orange2","darkgreen")) + theme_classic() + labs(y = "Mean % Ingesta-free Body Fat (+/- SE)", x = "Date", colour = "Migration Strategy") + theme(legend.position = "bottom") + theme(axis.text.x = element_text(angle = 60, hjust=1, size = 12), axis.text.y = element_text(size = 10), axis.title.y = element_text(size = 16), axis.title.x = element_blank(), legend.text = element_text(size = 18), legend.title = element_text(size = 18)) + coord_cartesian(y = c(2.5,12.5)) 
+ggplot(stat2 %>% mutate(MigrationBehavior = ifelse(MigrationBehavior == "Resident", "Short", MigrationBehavior)) %>% filter(!MigrationBehavior %in% c("TBD","Odd","Medium/Disperser"), MigrationBehavior %in% c("Long","Medium","Short")))  + geom_pointrange(aes(x = CapEvent, y = Mean, ymin = Mean - SE, ymax = Mean + SE, group = MigrationBehavior, colour = MigrationBehavior), position = position_dodge2(width = .175)) + geom_line(aes(x = CapEvent, y = Mean, group = MigrationBehavior, colour = MigrationBehavior), position = position_dodge2(width = .175)) + scale_colour_manual(values = c("mediumorchid4","orange2","darkgreen")) + theme_classic() + labs(y = "Mean % Ingesta-free Body Fat (+/- SE)", x = "Date", colour = "Migration Strategy") + theme(legend.position = "bottom") + theme(axis.text.x = element_text(angle = 60, hjust=1, size = 12), axis.text.y = element_text(size = 10), axis.title.y = element_text(size = 16), axis.title.x = element_blank(), legend.text = element_text(size = 18), legend.title = element_text(size = 18)) + coord_cartesian(y = c(2.5,12.5)) 
 
-ggsave("C:/Users/lwilde2/Desktop/RDH Database/RedDesertToHobackMuleDeerResearchProject/GrantApplications/WGBGLC_Grant/AnnualReports/2025/IFBF_Figure_EOY.png", width = 12, height = 8)
+ggsave("C:/Users/lwilde2/Documents/RDH Database/RedDesertToHobackMuleDeerResearchProject/GrantReports/WGBGLC/AnnualReports/2026/IFBF_Figure_MidY.png", width = 12, height = 8)
 
 
 # stat2 <- na.omit(MARall %>% select(!Age)) %>% group_by(MigrationBehavior, CapEvent) %>% summarise(Mean = mean(scaledIFBFat), SE = sd(scaledIFBFat)/sqrt(n())) %>% filter(MigrationBehavior != "N/A") %>% ungroup() #na.omit(CAPall)
